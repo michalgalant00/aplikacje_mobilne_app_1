@@ -57,11 +57,28 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Center(
-                child: Image.network(
-                  'https://mymodernmet.com/wp/wp-content/uploads/archive/Woz2XwujXPs2sO7TtUXN_Hedgehog3.jpg',
-                  fit: BoxFit.cover,
-                ),
+              Stack(
+                alignment: Alignment.topLeft,
+                children: [
+                  Center(
+                    child: Image.network(
+                      'https://mymodernmet.com/wp/wp-content/uploads/archive/Woz2XwujXPs2sO7TtUXN_Hedgehog3.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    top: 16.0,
+                    left: 16.0,
+                    child: Text(
+                      '$_sliderValue',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               TextFormField(
                 controller: _firstNameController,
@@ -105,10 +122,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: (value) {
                   setState(() {
                     _sliderValue = int.tryParse(value) ?? 0;
+                    _poziomController.text = _sliderValue.toString();
                   });
                 },
               ),
-
               Slider(
                 value: _sliderValue.toDouble(),
                 min: 0,
@@ -123,10 +140,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 }
                     : null,
-              ),
-              Text(
-                'Poziom: ${_sliderValue.round()}',
-                style: const TextStyle(fontSize: 16),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -144,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       if (value != null) {
                         setState(() {
                           _sliderValue = value;
+                          _poziomController.text = _sliderValue.toString();
                         });
                       }
                     });
