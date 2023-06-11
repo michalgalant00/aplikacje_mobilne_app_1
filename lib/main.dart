@@ -32,6 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _sliderValue = 0;
+  bool _isSliderEnabled = false;
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -40,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _poziomController.text = _sliderValue.toString();
+    _poziomController.text = '';
   }
 
   @override
@@ -66,15 +67,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  Positioned(
-                    top: 16.0,
-                    left: 16.0,
-                    child: Text(
-                      '$_sliderValue',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                  Visibility(
+                    visible: _isSliderEnabled,
+                    child: Positioned(
+                      top: 16.0,
+                      left: 16.0,
+                      child: Text(
+                        '$_sliderValue',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                     ),
                   ),
@@ -113,8 +117,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (value == null || value.isEmpty) {
                     return 'Proszę wprowadź poziom';
                   }
-                  final intValue = int.tryParse(value);
-                  if (intValue == null || intValue < 0 || intValue > 100 || intValue % 4 != 0) {
+                  int? intValue = int.tryParse(value);
+                  if (intValue == null ||
+                      intValue < 0 ||
+                      intValue > 100 ||
+                      intValue % 4 != 0) {
                     return 'Proszę wprowadź liczbę całkowitą z zakresu 0-100, podzielną przez 4';
                   }
                   return null;
@@ -122,7 +129,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: (value) {
                   setState(() {
                     _sliderValue = int.tryParse(value) ?? 0;
-                    _poziomController.text = _sliderValue.toString();
                   });
                 },
               ),
@@ -132,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 max: 100,
                 divisions: 25,
                 label: _sliderValue.round().toString(),
-                onChanged: _formKey.currentState?.validate() ?? false
+                onChanged: _isSliderEnabled
                     ? (value) {
                   setState(() {
                     _sliderValue = value.round();
@@ -153,14 +159,16 @@ class _MyHomePageState extends State<MyHomePage> {
                           sliderValue: _sliderValue,
                         ),
                       ),
-                    ).then((value) {
+                      ).then( (value) {
                       if (value != null) {
                         setState(() {
-                          _sliderValue = value;
+                          _sliderValue = value['sliderEnabled'] ? _sliderValue : 0;
                           _poziomController.text = _sliderValue.toString();
+                          _isSliderEnabled = value['sliderEnabled'];
                         });
                       }
                     });
+
                   }
                 },
                 child: const Text('Zapisz'),

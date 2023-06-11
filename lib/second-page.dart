@@ -17,12 +17,20 @@ class SecondPage extends StatelessWidget {
           children: [
             Text('Witaj, $firstName $lastName'),
             Text('Twój poziom: $sliderValue'),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, '/home');
-              },
-              child: const Text('Wróć do strony głównej'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.pop(context, '/home');
+            //   },
+            //   child: const Text('Wróć do strony głównej'),
+            // ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context, {
+              'sliderEnabled': true,
+            });
+          },
+          child: const Text('Wróć do strony głównej'),
+        ),
           ],
         ),
       ),
