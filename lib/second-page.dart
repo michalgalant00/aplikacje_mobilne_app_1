@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SecondPage extends StatelessWidget {
   final String firstName, lastName;
-  final double sliderValue;
+  final int sliderValue;
   const SecondPage({Key? key, required this.firstName, required this.lastName, required this.sliderValue}) : super(key: key);
 
   @override
@@ -16,6 +16,7 @@ class SecondPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('Witaj, $firstName $lastName'),
+            Text('Twój poziom: $sliderValue'),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context, '/home');

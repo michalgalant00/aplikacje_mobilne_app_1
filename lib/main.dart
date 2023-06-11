@@ -16,9 +16,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: Builder(
-        builder: (context) => const MyHomePage(title: 'Aplikacja nr 1'),
-      ),
+      home: const MyHomePage(title: 'Aplikacja nr 1'),
     );
   }
 }
@@ -33,13 +31,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _sliderValue = 0.0;
+  int _sliderValue = 0;
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _poziomController = TextEditingController();
-
-  bool _isSliderEnabled = false;
 
   @override
   void initState() {
@@ -100,25 +96,29 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (value == null || value.isEmpty) {
                     return 'Proszę wprowadź poziom';
                   }
+                  final intValue = int.tryParse(value);
+                  if (intValue == null || intValue < 0 || intValue > 100 || intValue % 4 != 0) {
+                    return 'Proszę wprowadź liczbę całkowitą z zakresu 0-100, podzielną przez 4';
+                  }
                   return null;
                 },
-                // enabled: _isSliderEnabled,
                 onChanged: (value) {
                   setState(() {
-                    _sliderValue = double.parse(value);
+                    _sliderValue = int.tryParse(value) ?? 0;
                   });
                 },
               ),
+
               Slider(
-                value: _sliderValue,
+                value: _sliderValue.toDouble(),
                 min: 0,
                 max: 100,
                 divisions: 25,
                 label: _sliderValue.round().toString(),
-                onChanged: _isSliderEnabled
-                    ? (double value) {
+                onChanged: _formKey.currentState?.validate() ?? false
+                    ? (value) {
                   setState(() {
-                    _sliderValue = value;
+                    _sliderValue = value.round();
                     _poziomController.text = _sliderValue.toString();
                   });
                 }
@@ -141,9 +141,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ).then((value) {
-                      setState(() {
-                        _isSliderEnabled = true;
-                      });
+                      if (value != null) {
+                        setState(() {
+                          _sliderValue = value;
+                        });
+                      }
                     });
                   }
                 },
